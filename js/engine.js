@@ -1,4 +1,4 @@
-/* Engine.js
+/* Engine.js 
  * This file provides the game loop functionality (update entities and render),
  * draws the initial game board on the screen, and then calls the update and
  * render methods on your player and enemy objects (defined in your app.js).
@@ -80,7 +80,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -91,6 +91,8 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+        //! in this  function all the players and enemies has to be updated
+
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
@@ -136,7 +138,8 @@ var Engine = (function(global) {
             }
         }
 
-        renderEntities();
+        renderEntities(); 
+        //renders entities ie players and enemies
     }
 
     /* This function is called by the render function and is called on each game
@@ -147,11 +150,15 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+
+         //console.log('qweq');
+
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
         player.render();
+
     }
 
     /* This function does nothing but it could have been a good place to
@@ -160,6 +167,7 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        console.log('reset');
     }
 
     /* Go ahead and load all of the images we know we're going to need to
