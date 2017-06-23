@@ -2,11 +2,12 @@
 // in this file we have to create a render methods for player and enemies
 
 var Enemy = class {
-    constructor(speed , sprite , x , y){
+    constructor(speed , sprite , x , y , d){
         this.speed = speed;
         this.sprite = sprite;
         this.x = x;
         this.y = y;
+        this.d = d;
     }
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -16,8 +17,12 @@ var Enemy = class {
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
 
-    this.x = this.x + this.speed;
+    this.x = this.x + this.speed * this.d;
     this.x = this.x%500;
+
+    if(this.x < -4){
+        this.x = this.x + 500;
+    }
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -87,15 +92,15 @@ player.prototype.handleInput = function(key){
 }
 
 // Now instantiate your objects.
-var enemy1 = new Enemy(1 , 'images/enemy-bug.png' , 0 , 60);
-var enemy2 = new Enemy(0.4 , 'images/enemy-bug.png' , 0 , 150);
-var enemy3 = new Enemy(0.7 , 'images/enemy-bug.png' , 0 , 230);
+var enemy1 = new Enemy(1 , 'images/enemy-bug.png' , 0 , 60 , 1);
+var enemy2 = new Enemy(0.4 , 'images/enemy-bug.png' , 0 , 150 , -1);
+var enemy3 = new Enemy(0.7 , 'images/enemy-bug.png' , 0 , 230 , 1);
 
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [enemy1 , enemy2 , enemy3];
 
 // Place the player object in a variable called player
-var player = new player('images/char-boy.png', 400 , 400)
+var player = new player('images/char-boy.png', 0 , 400)
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -122,6 +127,12 @@ checkCollisions = function(){
         if((enemy.x < player.x + 70) && (enemy.x > player.x - 70)){
             if((enemy.y < player.y + 70) && (enemy.y > player.y - 70)){
                console.log('collission');
+
+               var time = new Date().getTime() + 2000;
+
+               while(time > new Date().getTime() ){
+                    //console.log(time , new Date().getTime() )
+               }
                //resetting the player position
                player.x = 400;
                player.y = 400;
