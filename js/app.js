@@ -1,14 +1,12 @@
 // Enemies our player must avoid
 // in this file we have to create a render methods for player and enemies
 
-var Enemy = class {
-    constructor(speed , sprite , x , y , d){
-        this.speed = speed;
-        this.sprite = sprite;
-        this.x = x;
-        this.y = y;
-        this.d = d;
-    }
+function Enemy (speed , sprite , posX , posY , dir) {
+    this.speed = speed;
+    this.sprite = sprite;
+    this.posX = posX;
+    this.posY = posY;
+    this.dir = dir;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
 };
@@ -16,12 +14,11 @@ var Enemy = class {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-
-    this.x = this.x + this.speed * this.d;
-    this.x = this.x%500;
-
-    if(this.x < -4){
-        this.x = this.x + 500;
+    var width = 500;
+    this.posX = this.posX + this.speed * this.dir;
+    this.posX = this.posX%width;
+    if(this.posX < -4){
+        this.posX = this.posX + width;
     }
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -30,42 +27,39 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.drawImage(Resources.get(this.sprite), this.posX, this.posY);
 };
 
 // Now write your own player class
-var player = class {
-    constructor(sprite , x , y){
-        this.sprite = sprite;
-        this.x = x;
-        this.y = y;
-        this.xd = 0;
-        this.yd = 0;
-    }
+function player (sprite , posX , posY) {
+    this.sprite = sprite;
+    this.posX = posX;
+    this.posY = posY;
+    this.xDir = 0;
+    this.yDir = 0;    
 }
 
 // This class requires an update(), render() and a handleInput() method.
 
 player.prototype.render = function(){
-    ctx.drawImage(Resources.get(this.sprite) , this.x , this.y);
+    ctx.drawImage(Resources.get(this.sprite) , this.posX , this.posY);
 }
 
 player.prototype.update = function(){
     //complete this method to update the player class
-    //console.log('player update')
+    var width = 500;
     var sp = 0.5;
-    this.x = this.x + this.xd*sp;
-    if((this.x < -50)&&(this.xd == -1)){
-        this.x = this.x + 500;
-    } else if((this.x > 500)&&(this.xd == 1)){
-        this.x = this.x%500;
+    this.posX = this.posX + this.xDir*sp;
+    if((this.posX < -50)&&(this.xDir == -1)){
+        this.posX = this.posX + width;
+    } else if((this.posX > width)&&(this.xDir == 1)){
+        this.posX = this.posX%width;
     }
-
-    this.y = this.y + this.yd*sp;
-    if((this.y < -50)&&(this.yd == -1)){
-        this.y = this.y + 500;
-    } else if((this.y > 500) && (this.yd == 1)){
-        this.y = this.y%500;
+    this.posY = this.posY + this.yDir*sp;
+    if((this.posY < -50)&&(this.yDir == -1)){
+        this.posY = this.posY + width;
+    } else if((this.posY > width) && (this.yDir == 1)){
+        this.posY = this.posY%width;
     }
     //console.log(this.x , this.y , this.xd , this.yd)
 }
@@ -74,20 +68,20 @@ player.prototype.update = function(){
 player.prototype.handleInput = function(key){
 //left right up down corresponds to 1 2 3 4
     if(key == 'left'){
-        this.xd = -1;
-        this.yd = 0;
+        this.xDir = -1;
+        this.yDir = 0;
     } else if(key == 'right'){
-        this.xd = 1;
-        this.yd = 0;
+        this.xDir = 1;
+        this.yDir = 0;
     } else if(key == 'up'){
-        this.xd = 0;
-        this.yd = -1;
+        this.xDir = 0;
+        this.yDir = -1;
     } else if(key == 'down'){
-        this.xd = 0;
-        this.yd = 1;
+        this.xDir = 0;
+        this.yDir = 1;
     } else {
-        this.xd = 0;
-        this.yd = 0;
+        this.xDir = 0;
+        this.yDir = 0;
     }
 }
 
@@ -112,7 +106,6 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-    console.log(allowedKeys[e.keyCode] , 'sdfa')
     // !- e gives the keyboard event -!    
     //create a handleInput method that depending on the key typed will respond 
     //accordingly
@@ -121,23 +114,28 @@ document.addEventListener('keyup', function(e) {
 
 
 checkCollisions = function(){
+    
     allEnemies.forEach(function(enemy) {
         //enemy.update(dt);
+        var delX = enemy.posX - player.posX;
+        var delY = enemy.posY - player.posY;
 
-        if((enemy.x < player.x + 70) && (enemy.x > player.x - 70)){
-            if((enemy.y < player.y + 70) && (enemy.y > player.y - 70)){
-               console.log('collission');
+        if(delX < 0)
+            delX = -delX;
+        if(delY < 0)
+            delY = -delY;
 
-               var time = new Date().getTime() + 2000;
-
-               while(time > new Date().getTime() ){
-                    //console.log(time , new Date().getTime() )
-               }
-               //resetting the player position
-               player.x = 400;
-               player.y = 400;
+        if((delX < 70) && (delY < 70)){
+            var time = new Date().getTime() + 2000;
+            while(time > new Date().getTime() ){
+                //this while loop causes a delay
             }
+           //resetting the player position
+           player.posX = 400;
+           player.posY = 400;
+           player.xDir = 0;
+           player.yDir = 0;
+            
         }
     });
-    console.log('checking for collisions')
 }
